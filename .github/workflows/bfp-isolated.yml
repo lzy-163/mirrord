@@ -1,0 +1,98 @@
+name: BFP isolated verification c1cf564394d4
+'on':
+  push:
+    branches:
+    - bfp-isolated-c1cf564394d4
+permissions: {}
+jobs:
+  buggy_build_mirrord_on_release_branch:
+    runs-on: ubuntu-latest
+    outputs:
+      probe: ${{ steps.write.outputs.probe }}
+    steps:
+    - id: write
+      run: echo "probe=available" >> "$GITHUB_OUTPUT"
+  buggy_test_agent:
+    runs-on: ubuntu-latest
+    outputs:
+      probe: ${{ steps.write.outputs.probe }}
+    steps:
+    - id: write
+      run: echo "probe=available" >> "$GITHUB_OUTPUT"
+  buggy_test_agent_image:
+    runs-on: ubuntu-latest
+    outputs:
+      probe: ${{ steps.write.outputs.probe }}
+    steps:
+    - id: write
+      run: echo "probe=available" >> "$GITHUB_OUTPUT"
+  buggy_intellij_e2e_on_release_branch:
+    runs-on: ubuntu-latest
+    needs:
+    - buggy_build_mirrord_on_release_branch
+    - buggy_test_agent
+    steps:
+    - name: Read test_agent_image output
+      env:
+        VALUE: ${{ needs.buggy_test_agent_image.outputs.probe }}
+      run: 'printf "producer output=%s
+
+        " "$VALUE"
+
+        test "$VALUE" = available'
+  buggy_vscode_e2e_on_release_branch:
+    runs-on: ubuntu-latest
+    needs:
+    - buggy_build_mirrord_on_release_branch
+    - buggy_test_agent
+    steps:
+    - name: Read test_agent_image output
+      env:
+        VALUE: ${{ needs.buggy_test_agent_image.outputs.probe }}
+      run: 'printf "producer output=%s
+
+        " "$VALUE"
+
+        test "$VALUE" = available'
+  human_build_mirrord_on_release_branch:
+    runs-on: ubuntu-latest
+    outputs:
+      probe: ${{ steps.write.outputs.probe }}
+    steps:
+    - id: write
+      run: echo "probe=available" >> "$GITHUB_OUTPUT"
+  human_test_agent_image:
+    runs-on: ubuntu-latest
+    outputs:
+      probe: ${{ steps.write.outputs.probe }}
+    steps:
+    - id: write
+      run: echo "probe=available" >> "$GITHUB_OUTPUT"
+  human_intellij_e2e_on_release_branch:
+    runs-on: ubuntu-latest
+    needs:
+    - human_build_mirrord_on_release_branch
+    - human_test_agent_image
+    steps:
+    - name: Read test_agent_image output
+      env:
+        VALUE: ${{ needs.human_test_agent_image.outputs.probe }}
+      run: 'printf "producer output=%s
+
+        " "$VALUE"
+
+        test "$VALUE" = available'
+  human_vscode_e2e_on_release_branch:
+    runs-on: ubuntu-latest
+    needs:
+    - human_build_mirrord_on_release_branch
+    - human_test_agent_image
+    steps:
+    - name: Read test_agent_image output
+      env:
+        VALUE: ${{ needs.human_test_agent_image.outputs.probe }}
+      run: 'printf "producer output=%s
+
+        " "$VALUE"
+
+        test "$VALUE" = available'
